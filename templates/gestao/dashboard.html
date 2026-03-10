@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Essences{% endblock %}
+{% block page_title %}Visão Geral{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 col-6">
+        <div class="small-box text-bg-info">
+            <div class="inner">
+                <h3>{{ total_clientes }}</h3>
+                <p>Clientes Cadastrados</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                Ver clientes <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-6">
+        <div class="small-box text-bg-warning">
+            <div class="inner">
+                <h3>{{ total_servicos_pendentes }}</h3>
+                <p>Orçamentos Pendentes</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <a href="#" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                Ver serviços <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-6">
+        <div class="small-box text-bg-success">
+            <div class="inner">
+                <h3>{{ total_servicos_concluidos }}</h3>
+                <p>Serviços Concluídos</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                Ver histórico <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header border-0">
+                <h3 class="card-title">Análise de Serviços</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="meuGrafico" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
