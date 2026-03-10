@@ -1,11 +1,12 @@
 import json
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from .models import Cliente, Servico, Material
 
 
-class DashboardView(TemplateView):
+class DashboardView(LoginRequiredMixin, TemplateView):
 	template_name = 'gestao/dashboard.html'
 
 	def get_context_data(self, **kwargs):
@@ -33,34 +34,34 @@ class DashboardView(TemplateView):
 
 
 # CRUD CLIENTES
-class ClienteListView(ListView):
+class ClienteListView(LoginRequiredMixin, ListView):
 	model = Cliente
 	template_name = 'gestao/cliente_list.html'
 	context_object_name = 'clientes'
 
 
-class ClienteCreateView(CreateView):
+class ClienteCreateView(LoginRequiredMixin, CreateView):
 	model = Cliente
 	template_name = 'gestao/cliente_form.html'
 	fields = ['nome', 'telefone', 'email', 'endereco']
 	success_url = reverse_lazy('cliente_list')
 
 
-class ClienteUpdateView(UpdateView):
+class ClienteUpdateView(LoginRequiredMixin, UpdateView):
 	model = Cliente
 	template_name = 'gestao/cliente_form.html'  # Reaproveitamos o mesmo HTML do Create!
 	fields = ['nome', 'telefone', 'email', 'endereco']
 	success_url = reverse_lazy('cliente_list')
 
 
-class ClienteDeleteView(DeleteView):
+class ClienteDeleteView(LoginRequiredMixin, DeleteView):
 	model = Cliente
 	template_name = 'gestao/cliente_confirm_delete.html'
 	success_url = reverse_lazy('cliente_list')
 
 
 # CRUD SERVIÇOS
-class ServicoListView(ListView):
+class ServicoListView(LoginRequiredMixin, ListView):
 	model = Servico
 	template_name = 'gestao/servico_list.html'
 	context_object_name = 'servicos'
@@ -78,7 +79,7 @@ class ServicoListView(ListView):
 		return queryset
 
 
-class ServicoCreateView(CreateView):
+class ServicoCreateView(LoginRequiredMixin, CreateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
 	# Campos que vão aparecer no formulário
@@ -86,41 +87,41 @@ class ServicoCreateView(CreateView):
 	success_url = reverse_lazy('servico_list')
 
 
-class ServicoUpdateView(UpdateView):
+class ServicoUpdateView(LoginRequiredMixin, UpdateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
 	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
 	success_url = reverse_lazy('servico_list')
 
 
-class ServicoDeleteView(DeleteView):
+class ServicoDeleteView(LoginRequiredMixin, DeleteView):
 	model = Servico
 	template_name = 'gestao/servico_confirm_delete.html'
 	success_url = reverse_lazy('servico_list')
 
 
 # CRUD MATERIAIS
-class MaterialListView(ListView):
+class MaterialListView(LoginRequiredMixin, ListView):
 	model = Material
 	template_name = 'gestao/material_list.html'
 	context_object_name = 'materiais'
 
 
-class MaterialCreateView(CreateView):
+class MaterialCreateView(LoginRequiredMixin, CreateView):
 	model = Material
 	template_name = 'gestao/material_form.html'
 	fields = ['nome', 'custo_unitario', 'estoque_atual']
 	success_url = reverse_lazy('material_list')
 
 
-class MaterialUpdateView(UpdateView):
+class MaterialUpdateView(LoginRequiredMixin, UpdateView):
 	model = Material
 	template_name = 'gestao/material_form.html'
 	fields = ['nome', 'custo_unitario', 'estoque_atual']
 	success_url = reverse_lazy('material_list')
 
 
-class MaterialDeleteView(DeleteView):
+class MaterialDeleteView(LoginRequiredMixin, DeleteView):
 	model = Material
 	template_name = 'gestao/material_confirm_delete.html'
 	success_url = reverse_lazy('material_list')

@@ -59,6 +59,15 @@
                             <p>Estoque / Materiais</p>
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link text-danger border-0 bg-transparent text-start w-100">
+                                <i class="nav-icon fas fa-sign-out-alt"></i> Sair do Sistema
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </nav>
         </div>
