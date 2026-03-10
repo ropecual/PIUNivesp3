@@ -1,9 +1,20 @@
 from django.urls import path
-from .views import DashboardView, ClienteListView, ClienteCreateView
+from .views import DashboardView, ClienteListView, ClienteCreateView, ClienteUpdateView, ClienteDeleteView, \
+	ServicoListView, ServicoCreateView, ServicoUpdateView, ServicoDeleteView
 
 urlpatterns = [
 	# A rota vazia '' agora chama a Classe DashboardView
 	path('', DashboardView.as_view(), name='dashboard'),
+
+	# Clientes
 	path('clientes/', ClienteListView.as_view(), name='cliente_list'),
 	path('clientes/novo/', ClienteCreateView.as_view(), name='cliente_novo'),
+	path('clientes/<int:pk>/editar/', ClienteUpdateView.as_view(), name='cliente_editar'),
+	path('clientes/<int:pk>/excluir/', ClienteDeleteView.as_view(), name='cliente_excluir'),
+
+	# Serviços
+	path('servicos/', ServicoListView.as_view(), name='servico_list'),
+	path('servicos/novo/', ServicoCreateView.as_view(), name='servico_novo'),
+	path('servicos/<int:pk>/editar/', ServicoUpdateView.as_view(), name='servico_editar'),
+	path('servicos/<int:pk>/excluir/', ServicoDeleteView.as_view(), name='servico_excluir'),
 ]

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Serviço{% endblock %}
+{% block page_title %}Atenção{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-danger card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Confirmar Exclusão</h3>
+            </div>
+            <div class="card-body">
+                <p>Tem certeza que deseja excluir o serviço <strong>{{ object.get_tipo_display }} - {{ object.cliente.nome }}</strong>?</p>
+                <p class="text-danger"><small>Esta ação não pode ser desfeita.</small></p>
+            </div>
+            <div class="card-footer text-end">
+                <form method="post">
+                    {% csrf_token %}
+                    <a href="{% url 'servico_list' %}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

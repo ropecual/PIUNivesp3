@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Cliente{% endblock %}
+{% block page_title %}Atenção{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-danger card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Confirmar Exclusão</h3>
+            </div>
+            <div class="card-body">
+                <p>Tem certeza que deseja excluir o cliente <strong>{{ object.nome }}</strong>?</p>
+                <p class="text-danger">
+                    <small>
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Aviso: Excluir um cliente também excluirá todos os serviços e orçamentos vinculados a ele!
+                    </small>
+                </p>
+            </div>
+            <div class="card-footer text-end">
+                <form method="post">
+                    {% csrf_token %}
+                    <a href="{% url 'cliente_list' %}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
