@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Clientes | Essences Gestão{% endblock %}
+{% block page_title %}Lista de Clientes{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Clientes Cadastrados</h3>
+                <div class="card-tools">
+                    <a href="{% url 'cliente_novo' %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Novo Cliente
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body p-0">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Telefone (WhatsApp)</th>
+                            <th>E-mail</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.id }}</td>
+                            <td>{{ cliente.nome }}</td>
+                            <td>{{ cliente.telefone }}</td>
+                            <td>{{ cliente.email|default:"-" }}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                Nenhum cliente cadastrado ainda. Clique em "Novo Cliente" para começar.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

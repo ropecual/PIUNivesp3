@@ -1,4 +1,5 @@
-from django.views.generic import TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, CreateView
 from .models import Cliente, Servico
 
 
@@ -15,3 +16,16 @@ class DashboardView(TemplateView):
 		context['total_servicos_concluidos'] = Servico.objects.filter(status='CONC').count()
 
 		return context
+
+
+class ClienteListView(ListView):
+	model = Cliente
+	template_name = 'gestao/cliente_list.html'
+	context_object_name = 'clientes'
+
+
+class ClienteCreateView(CreateView):
+	model = Cliente
+	template_name = 'gestao/cliente_form.html'
+	fields = ['nome', 'telefone', 'email', 'endereco']
+	success_url = reverse_lazy('cliente_list')

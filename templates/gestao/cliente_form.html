@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Novo Cliente | Essences Gestão{% endblock %}
+{% block page_title %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto"> <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Dados do Cliente</h3>
+            </div>
+            
+            <form method="post">
+                <div class="card-body">
+                    {% csrf_token %}
+                    
+                    {{ form|crispy }}
+                </div>
+                
+                <div class="card-footer text-end">
+                    <a href="{% url 'cliente_list' %}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Salvar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
