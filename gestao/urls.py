@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import DashboardView, ClienteListView, ClienteCreateView, ClienteUpdateView, ClienteDeleteView, \
-	ServicoListView, ServicoCreateView, ServicoUpdateView, ServicoDeleteView
+	ServicoListView, ServicoCreateView, ServicoUpdateView, ServicoDeleteView, \
+	MaterialListView, MaterialCreateView, MaterialUpdateView, MaterialDeleteView
 
 urlpatterns = [
 	# A rota vazia '' agora chama a Classe DashboardView
@@ -17,4 +18,10 @@ urlpatterns = [
 	path('servicos/novo/', ServicoCreateView.as_view(), name='servico_novo'),
 	path('servicos/<int:pk>/editar/', ServicoUpdateView.as_view(), name='servico_editar'),
 	path('servicos/<int:pk>/excluir/', ServicoDeleteView.as_view(), name='servico_excluir'),
+
+	# Materiais
+	path('materiais/', MaterialListView.as_view(), name='material_list'),
+	path('materiais/novo/', MaterialCreateView.as_view(), name='material_novo'),
+	path('materiais/<int:pk>/editar/', MaterialUpdateView.as_view(), name='material_editar'),
+	path('materiais/<int:pk>/excluir/', MaterialDeleteView.as_view(), name='material_excluir'),
 ]

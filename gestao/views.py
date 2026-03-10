@@ -2,7 +2,7 @@ import json
 
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
-from .models import Cliente, Servico
+from .models import Cliente, Servico, Material
 
 
 class DashboardView(TemplateView):
@@ -45,11 +45,13 @@ class ClienteCreateView(CreateView):
 	fields = ['nome', 'telefone', 'email', 'endereco']
 	success_url = reverse_lazy('cliente_list')
 
+
 class ClienteUpdateView(UpdateView):
 	model = Cliente
 	template_name = 'gestao/cliente_form.html'  # Reaproveitamos o mesmo HTML do Create!
 	fields = ['nome', 'telefone', 'email', 'endereco']
 	success_url = reverse_lazy('cliente_list')
+
 
 class ClienteDeleteView(DeleteView):
 	model = Cliente
@@ -63,6 +65,19 @@ class ServicoListView(ListView):
 	template_name = 'gestao/servico_list.html'
 	context_object_name = 'servicos'
 
+	def get_queryset(self):
+		# Pega a lista padrão com todos os serviços
+		queryset = super().get_queryset()
+
+		# Verifica se na URL tem algo como "?status=PEND"
+		status_filter = self.request.GET.get('status')
+		if status_filter:
+			# Filtra a lista pelo status recebido
+			queryset = queryset.filter(status=status_filter)
+
+		return queryset
+
+
 class ServicoCreateView(CreateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
@@ -70,13 +85,42 @@ class ServicoCreateView(CreateView):
 	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
 	success_url = reverse_lazy('servico_list')
 
+
 class ServicoUpdateView(UpdateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
 	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
 	success_url = reverse_lazy('servico_list')
 
+
 class ServicoDeleteView(DeleteView):
 	model = Servico
 	template_name = 'gestao/servico_confirm_delete.html'
 	success_url = reverse_lazy('servico_list')
+
+
+# CRUD MATERIAIS
+class MaterialListView(ListView):
+	model = Material
+	template_name = 'gestao/material_list.html'
+	context_object_name = 'materiais'
+
+
+class MaterialCreateView(CreateView):
+	model = Material
+	template_name = 'gestao/material_form.html'
+	fields = ['nome', 'custo_unitario', 'estoque_atual']
+	success_url = reverse_lazy('material_list')
+
+
+class MaterialUpdateView(UpdateView):
+	model = Material
+	template_name = 'gestao/material_form.html'
+	fields = ['nome', 'custo_unitario', 'estoque_atual']
+	success_url = reverse_lazy('material_list')
+
+
+class MaterialDeleteView(DeleteView):
+	model = Material
+	template_name = 'gestao/material_confirm_delete.html'
+	success_url = reverse_lazy('material_list')

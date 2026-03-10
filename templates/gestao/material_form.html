@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Material | Essences Gestão{% endblock %}
+{% block page_title %}Dados do Material{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Informações do Item</h3>
+            </div>
+            <form method="post">
+                <div class="card-body">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'material_list' %}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Salvar Material
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
