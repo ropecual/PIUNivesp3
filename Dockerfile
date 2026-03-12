@@ -23,8 +23,15 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . /app/
 
+# Setup entrypoint
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Expose port
 EXPOSE 8000
 
-# Run gunicorn
+# Entrypoint roda migrate + create_admin automaticamente
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# CMD padrão (pode ser sobrescrito no docker-compose)
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
