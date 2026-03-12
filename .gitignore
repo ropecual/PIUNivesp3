@@ -9,7 +9,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+docs/*
 
+.env
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -257,3 +259,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+gestao/migrations/__init__.py
+.gitignore
+website/migrations/__init__.py
