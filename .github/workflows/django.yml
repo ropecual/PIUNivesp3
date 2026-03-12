@@ -31,4 +31,5 @@ jobs:
         SECRET_KEY: django-insecure-test-key-for-ci
         DEBUG: True
       run: |
+        python manage.py collectstatic --noinput
         python manage.py test
