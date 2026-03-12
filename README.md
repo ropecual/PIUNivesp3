@@ -191,7 +191,7 @@ Os testes cobrem:
 
 ## 👥 Equipe
 
-Projeto desenvolvido por alunos do curso de **Tecnólogo em Ciência de Dados** da **UNIVESP** como requisito parcial da disciplina de Projeto Integrador III.
+Projeto desenvolvido por alunos do curso da **UNIVESP** como requisito parcial da disciplina de Projeto Integrador III.
 
 ---
 
