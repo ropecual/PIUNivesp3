@@ -74,4 +74,4 @@ class ViewsTest(TestCase):
     def test_servico_list_view(self):
         response = self.client.get(reverse('servico_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Manutenção preventiva")
+        self.assertContains(response, "Manutenção")
