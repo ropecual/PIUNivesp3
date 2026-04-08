@@ -1,12 +1,15 @@
 import json
 
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.db import transaction, models
 from django.db.models import Count, Q, Sum
 from django.forms import inlineformset_factory
 from .models import Cliente, Servico, Material, ServicoMaterial
+from .forms import ServicoForm
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -106,8 +109,7 @@ ServicoMaterialFormSet = inlineformset_factory(
 class ServicoCreateView(LoginRequiredMixin, CreateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
-	# Campos que vão aparecer no formulário
-	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
+	form_class = ServicoForm
 	success_url = reverse_lazy('servico_list')
 
 	def get_context_data(self, **kwargs):
@@ -132,7 +134,7 @@ class ServicoCreateView(LoginRequiredMixin, CreateView):
 class ServicoUpdateView(LoginRequiredMixin, UpdateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
-	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
+	form_class = ServicoForm
 	success_url = reverse_lazy('servico_list')
 
 	def get_context_data(self, **kwargs):
@@ -158,6 +160,15 @@ class ServicoDeleteView(LoginRequiredMixin, DeleteView):
 	model = Servico
 	template_name = 'gestao/servico_confirm_delete.html'
 	success_url = reverse_lazy('servico_list')
+
+
+class ServicoConcluirView(LoginRequiredMixin, View):
+	def post(self, request, pk):
+		servico = get_object_or_404(Servico, pk=pk)
+		if servico.status != 'CONC':
+			servico.status = 'CONC'
+			servico.save()
+		return redirect('servico_list')
 
 
 # CRUD MATERIAIS

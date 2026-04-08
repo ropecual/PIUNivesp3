@@ -21,7 +21,7 @@
                     {{ materiais.management_form }}
                     <div id="materiais-formset">
                         {% for inline_form in materiais %}
-                            <div class="row form-row bg-light p-2 mb-2 rounded border">
+                            <div class="row form-row bg-light p-2 mb-2 rounded border material-form-row">
                                 {% for hidden in inline_form.hidden_fields %}
                                     {{ hidden }}
                                 {% endfor %}
@@ -37,6 +37,29 @@
                             </div>
                         {% endfor %}
                     </div>
+                    
+                    <!-- Formato base escondido para que o JS consiga cloná-lo -->
+                    <div id="empty-form-template" style="display: none;">
+                        <div class="row form-row bg-light p-2 mb-2 rounded border material-form-row">
+                            {% for hidden in materiais.empty_form.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+                            <div class="col-md-5">
+                                {{ materiais.empty_form.material|as_crispy_field }}
+                            </div>
+                            <div class="col-md-5">
+                                {{ materiais.empty_form.quantidade|as_crispy_field }}
+                            </div>
+                            <div class="col-md-2">
+                                {{ materiais.empty_form.DELETE|as_crispy_field }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-material-btn" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-plus"></i> Adicionar Mais Material
+                    </button>
+                    
                 </div>
                 <div class="card-footer text-end">
                     <a href="{% url 'servico_list' %}" class="btn btn-secondary me-2">Cancelar</a>
@@ -48,4 +71,30 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addBtn = document.getElementById('add-material-btn');
+        const formsetContainer = document.getElementById('materiais-formset');
+        const emptyFormTemplate = document.getElementById('empty-form-template').innerHTML;
+        // Pega o input gerado pelo Django que conta quantos forms existem no moment
+        const totalFormsInput = document.querySelector('input[name$="-TOTAL_FORMS"]'); 
+
+        addBtn.addEventListener('click', function() {
+            // Conta qual o próximo index baseado na contagem atual
+            const currentFormCount = parseInt(totalFormsInput.value);
+            
+            // Django utiliza __prefix__ num form vazio (empty_form). Precisamos substituí-lo
+            const newFormHtml = emptyFormTemplate.replace(/__prefix__/g, currentFormCount);
+            
+            // Acoplamos o novo HTML ali dentro do container Formset
+            formsetContainer.insertAdjacentHTML('beforeend', newFormHtml);
+            
+            // Aumenta a contagem +1 para o django processar e mandar pro BD depois
+            totalFormsInput.value = currentFormCount + 1;
+        });
+    });
+</script>
 {% endblock %}

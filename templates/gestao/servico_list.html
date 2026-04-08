@@ -46,6 +46,12 @@
                             <td>R$ {{ servico.custo_materiais }}</td>
                             <td><strong>R$ {{ servico.valor_total }}</strong></td>
                             <td>
+                                {% if servico.status != 'CONC' and servico.status != 'CANC' %}
+                                <form method="post" action="{% url 'servico_concluir' servico.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm me-1" title="Marcar como Concluído"><i class="fas fa-check"></i></button>
+                                </form>
+                                {% endif %}
                                 <a href="{% url 'servico_editar' servico.id %}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
                                 <a href="{% url 'servico_excluir' servico.id %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
                             </td>
