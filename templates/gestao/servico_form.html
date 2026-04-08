@@ -15,6 +15,28 @@
                 <div class="card-body">
                     {% csrf_token %}
                     {{ form|crispy }}
+                    
+                    <h5 class="mt-4 text-primary"><i class="fas fa-boxes"></i> Materiais Utilizados</h5>
+                    <hr>
+                    {{ materiais.management_form }}
+                    <div id="materiais-formset">
+                        {% for inline_form in materiais %}
+                            <div class="row form-row bg-light p-2 mb-2 rounded border">
+                                {% for hidden in inline_form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                <div class="col-md-5">
+                                    {{ inline_form.material|as_crispy_field }}
+                                </div>
+                                <div class="col-md-5">
+                                    {{ inline_form.quantidade|as_crispy_field }}
+                                </div>
+                                <div class="col-md-2">
+                                    {{ inline_form.DELETE|as_crispy_field }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="card-footer text-end">
                     <a href="{% url 'servico_list' %}" class="btn btn-secondary me-2">Cancelar</a>

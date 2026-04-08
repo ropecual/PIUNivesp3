@@ -3,7 +3,10 @@ import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
-from .models import Cliente, Servico, Material
+from django.db import transaction, models
+from django.db.models import Count, Q, Sum
+from django.forms import inlineformset_factory
+from .models import Cliente, Servico, Material, ServicoMaterial
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -12,18 +15,35 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 
+		contagens = Servico.objects.aggregate(
+			pendentes=Count('id', filter=Q(status='PEND')),
+			aprovados=Count('id', filter=Q(status='APROV')),
+			concluidos=Count('id', filter=Q(status='CONC')),
+			cancelados=Count('id', filter=Q(status='CANC')),
+			receita_mao_obra=Sum('valor_mao_de_obra', filter=Q(status='CONC'))
+		)
+
+		materiais_custo = ServicoMaterial.objects.filter(servico__status='CONC').aggregate(
+			total=Sum(models.F('quantidade') * models.F('material__custo_unitario'))
+		)['total'] or 0
+
+		receita_mao_obra = contagens['receita_mao_obra'] or 0
+
 		# Dados dos Cards
 		context['total_clientes'] = Cliente.objects.count()
-		context['total_servicos_pendentes'] = Servico.objects.filter(status='PEND').count()
-		context['total_servicos_concluidos'] = Servico.objects.filter(status='CONC').count()
+		context['total_servicos_pendentes'] = contagens['pendentes']
+		context['total_servicos_concluidos'] = contagens['concluidos']
+		
+		context['receita_total'] = receita_mao_obra + materiais_custo
+		context['custo_materiais'] = materiais_custo
 
 		# --- DADOS PARA O GRÁFICO (Análise de Dados) ---
 		labels = ['Pendentes', 'Aprovados', 'Concluídos', 'Cancelados']
 		dados = [
-			Servico.objects.filter(status='PEND').count(),
-			Servico.objects.filter(status='APROV').count(),
-			Servico.objects.filter(status='CONC').count(),
-			Servico.objects.filter(status='CANC').count(),
+			contagens['pendentes'],
+			contagens['aprovados'],
+			contagens['concluidos'],
+			contagens['cancelados'],
 		]
 
 		# Convertendo para JSON para o JavaScript conseguir ler no HTML
@@ -79,6 +99,10 @@ class ServicoListView(LoginRequiredMixin, ListView):
 		return queryset
 
 
+ServicoMaterialFormSet = inlineformset_factory(
+	Servico, ServicoMaterial, fields=('material', 'quantidade'), extra=1, can_delete=True
+)
+
 class ServicoCreateView(LoginRequiredMixin, CreateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
@@ -86,12 +110,48 @@ class ServicoCreateView(LoginRequiredMixin, CreateView):
 	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
 	success_url = reverse_lazy('servico_list')
 
+	def get_context_data(self, **kwargs):
+		data = super().get_context_data(**kwargs)
+		if self.request.POST:
+			data['materiais'] = ServicoMaterialFormSet(self.request.POST)
+		else:
+			data['materiais'] = ServicoMaterialFormSet()
+		return data
+
+	def form_valid(self, form):
+		context = self.get_context_data()
+		materiais = context['materiais']
+		with transaction.atomic():
+			self.object = form.save()
+			if materiais.is_valid():
+				materiais.instance = self.object
+				materiais.save()
+		return super().form_valid(form)
+
 
 class ServicoUpdateView(LoginRequiredMixin, UpdateView):
 	model = Servico
 	template_name = 'gestao/servico_form.html'
 	fields = ['cliente', 'tipo', 'descricao', 'data_agendada', 'status', 'valor_mao_de_obra']
 	success_url = reverse_lazy('servico_list')
+
+	def get_context_data(self, **kwargs):
+		data = super().get_context_data(**kwargs)
+		if self.request.POST:
+			data['materiais'] = ServicoMaterialFormSet(self.request.POST, instance=self.object)
+		else:
+			data['materiais'] = ServicoMaterialFormSet(instance=self.object)
+		return data
+
+	def form_valid(self, form):
+		context = self.get_context_data()
+		materiais = context['materiais']
+		with transaction.atomic():
+			self.object = form.save()
+			if materiais.is_valid():
+				materiais.instance = self.object
+				materiais.save()
+		return super().form_valid(form)
 
 
 class ServicoDeleteView(LoginRequiredMixin, DeleteView):

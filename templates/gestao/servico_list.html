@@ -24,7 +24,9 @@
                             <th>Cliente</th>
                             <th>Tipo</th>
                             <th>Status</th>
-                            <th>Valor (Mão de Obra)</th>
+                            <th>Mão de Obra</th>
+                            <th>Materiais</th>
+                            <th>Total</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -41,6 +43,8 @@
                                 {% if servico.status == 'CANC' %}<span class="badge text-bg-danger">Cancelado</span>{% endif %}
                             </td>
                             <td>R$ {{ servico.valor_mao_de_obra }}</td>
+                            <td>R$ {{ servico.custo_materiais }}</td>
+                            <td><strong>R$ {{ servico.valor_total }}</strong></td>
                             <td>
                                 <a href="{% url 'servico_editar' servico.id %}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
                                 <a href="{% url 'servico_excluir' servico.id %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
@@ -48,7 +52,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">Nenhum serviço cadastrado ainda.</td>
+                            <td colspan="8" class="text-center py-4 text-muted">Nenhum serviço cadastrado ainda.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

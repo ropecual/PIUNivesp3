@@ -44,3 +44,40 @@ class Servico(models.Model):
 
 	def __str__(self):
 		return f"{self.get_tipo_display()} - {self.cliente.nome}"
+
+	@property
+	def custo_materiais(self):
+		return sum(sm.quantidade * sm.material.custo_unitario for sm in self.materiais_usados.all())
+
+	@property
+	def valor_total(self):
+		return self.valor_mao_de_obra + self.custo_materiais
+
+	def save(self, *args, **kwargs):
+		if self.pk:
+			try:
+				old_instance = Servico.objects.get(pk=self.pk)
+				old_status = old_instance.status
+				# Deduce only when changing TO CONC. 
+				# If it goes back from CONC to other status, we should probably restock, but we'll stick to simple deduction on first CONC state.
+				if old_status != 'CONC' and self.status == 'CONC':
+					for sm in self.materiais_usados.all():
+						m = sm.material
+						m.estoque_atual -= sm.quantidade
+						m.save(update_fields=['estoque_atual'])
+			except Servico.DoesNotExist:
+				pass
+		super().save(*args, **kwargs)
+
+
+class ServicoMaterial(models.Model):
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE, related_name='materiais_usados')
+    material = models.ForeignKey(Material, on_delete=models.PROTECT)
+    quantidade = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.material.nome} no Serv {self.servico.id}"
+
+    @property
+    def custo_total(self):
+        return self.quantidade * self.material.custo_unitario

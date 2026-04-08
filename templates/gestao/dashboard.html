@@ -51,6 +51,32 @@
     </div>
 </div>
 
+<div class="row mt-2">
+    <div class="col-lg-6 col-12">
+        <div class="small-box text-bg-secondary">
+            <div class="inner">
+                <h3>R$ {{ custo_materiais|default:"0.00"|floatformat:2 }}</h3>
+                <p>Custos com Materiais (Serviços Concluídos)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-12">
+        <div class="small-box text-bg-success">
+            <div class="inner">
+                <h3>R$ {{ receita_total|default:"0.00"|floatformat:2 }}</h3>
+                <p>Receita Total (+ Materiais e Obra)</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mt-4">
     <div class="col-12">
         <div class="card mb-4">
